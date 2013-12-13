@@ -29,7 +29,7 @@ public class Field extends View implements SensorEventListener {
 		sensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 		sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_GAME);
 		color = new Paint();
-		color.setColor(Color.CYAN);
+		color.setColor(Color.GREEN);
 	}
 
 	@Override
@@ -65,7 +65,7 @@ public class Field extends View implements SensorEventListener {
 				if(eventX < -DEADZONE){
 					eventX = Math.abs(eventX)/SPEED_DIVISOR;
 					x = (x + eventX) % 100;
-					color.setColor(Color.CYAN);
+					color.setColor(Color.GREEN);
 				}
 				else if(eventX > DEADZONE){
 					eventX = Math.abs(eventX)/SPEED_DIVISOR;
