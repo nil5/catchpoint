@@ -60,14 +60,14 @@ public class Field extends View implements SensorEventListener {
 	    float[] adjustedValues = new float[3];
 
 	    final int axisSwap[][] = {
-	    {  1,  -1,  0,  1  },     // ROTATION_0 
-	    {-1,  -1,  1,  0  },     // ROTATION_90 
-	    {-1,    1,  0,  1  },     // ROTATION_180 
-	    {  1,    1,  1,  0  }  }; // ROTATION_270 
+	    { 1, -1,  0,  1},	// ROTATION_0 
+	    {-1, -1,  1,  0},	// ROTATION_90 
+	    {-1,  1,  0,  1},	// ROTATION_180 
+	    { 1,  1,  1,  0} };	// ROTATION_270 
 
 	    final int[] as = axisSwap[displayRotation]; 
 	    adjustedValues[0]  =  (float)as[0] * eventValues[ as[2] ]; 
-	    adjustedValues[1]  =  (float)as[1] * eventValues[ as[3] ]; 
+	    adjustedValues[1]  =  (float)as[1] * -eventValues[ as[3] ]; 
 	    adjustedValues[2]  =  eventValues[2];
 
 	    return adjustedValues;
