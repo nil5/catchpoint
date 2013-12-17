@@ -9,6 +9,7 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.view.View;
+import android.view.WindowManager;
 
 public class Field extends View implements SensorEventListener {
 	Context context;
@@ -53,13 +54,33 @@ public class Field extends View implements SensorEventListener {
 		// TODO Auto-generated method stub
 
 	}
+	
+	public static float[] adjustAccelOrientation(int displayRotation, float[] eventValues) 
+	{ 
+	    float[] adjustedValues = new float[3];
+
+	    final int axisSwap[][] = {
+	    {  1,  -1,  0,  1  },     // ROTATION_0 
+	    {-1,  -1,  1,  0  },     // ROTATION_90 
+	    {-1,    1,  0,  1  },     // ROTATION_180 
+	    {  1,    1,  1,  0  }  }; // ROTATION_270 
+
+	    final int[] as = axisSwap[displayRotation]; 
+	    adjustedValues[0]  =  (float)as[0] * eventValues[ as[2] ]; 
+	    adjustedValues[1]  =  (float)as[1] * eventValues[ as[3] ]; 
+	    adjustedValues[2]  =  eventValues[2];
+
+	    return adjustedValues;
+	}
 
 	@Override
 	public void onSensorChanged(SensorEvent event) {
 		long curTime = System.currentTimeMillis();
 		if(curTime - lastSensorUpdate > 50) {
-			float eventX = event.values[0];
-			float eventY = event.values[1];
+			WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+			float values[] = adjustAccelOrientation(wm.getDefaultDisplay().getRotation(), event.values);
+			float eventX = values[0];
+			float eventY = values[1];
 
 			if(Math.abs(eventY) > DEADZONE || Math.abs(eventX) > DEADZONE) {
 				if(eventX < -DEADZONE){
