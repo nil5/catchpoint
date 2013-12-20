@@ -20,7 +20,8 @@ public class TestField extends SurfaceView implements SensorEventListener, Callb
 	private Context context;
 	private int canvasWidth;
 	private int canvasHeight;
-	private float canvasRatio;
+	private static final float canvasRatio=16/9;
+	
 	private Paint color;
 	private Sensor sensor;
 	private List<Point> points;
@@ -55,9 +56,13 @@ public class TestField extends SurfaceView implements SensorEventListener, Callb
 		if(!isInitialized){
 			this.canvasWidth = canvas.getWidth();
 			this.canvasHeight = canvas.getHeight();
-			this.canvasRatio = canvasWidth/canvasHeight;
+			//this.canvasRatio = canvasWidth/canvasHeight;
 			this.isInitialized = true;
 		}
+		//canvas.drawRGB(255, 69, 0);
+		//canvas.scale(0.5F, 1F);
+		//canvas.clipRect(0, 0, (int)this.canvasWidth/2, 0);
+		canvas.drawRGB(255,255,255);
 		for (int i = 0; i < points.size(); i++){
 			canvas.drawCircle(percentWidth(points.get(i).getX()), percentHeight(points.get(i).getY()), percentWidth(points.get(i).getRadius()), points.get(i).getColor());
 		}

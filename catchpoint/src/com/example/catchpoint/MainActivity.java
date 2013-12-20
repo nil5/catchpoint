@@ -5,6 +5,7 @@ import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.FrameLayout;
 
 public class MainActivity extends Activity {
 
@@ -18,8 +19,11 @@ public class MainActivity extends Activity {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 
 		setContentView(R.layout.activity_main);
-		f = new TestField(this);
-		setContentView(f);
+		FrameLayout gamefield = (FrameLayout)findViewById(R.id.gameField);
+		gamefield.addView(new TestField(this));
+		
+		//f = new TestField(this);
+		//setContentView(f);
 	}
 	
 	
