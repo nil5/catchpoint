@@ -11,10 +11,12 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.view.View;
+import android.view.SurfaceHolder;
+import android.view.SurfaceHolder.Callback;
+import android.view.SurfaceView;
 import android.view.WindowManager;
 
-public class Field extends View implements SensorEventListener {
+public class TestField extends SurfaceView implements SensorEventListener, Callback {
 	private Context context;
 	private int canvasWidth;
 	private int canvasHeight;
@@ -24,16 +26,20 @@ public class Field extends View implements SensorEventListener {
 	private List<Point> points;
 	private long lastSensorUpdate = 0;
 	private static final float DEADZONE = 0.1F; // in m/s^2
-	private static final int REFRESH_RATE = 25; // in ms
+	private static final int REFRESH_RATE = 10; // in ms
 	private static final float SPEED_DIVISOR = 100/REFRESH_RATE;
 	private boolean isInitialized = false;
+	private FieldThread fieldThread;
 
-	public Field(Context context) {
+	public TestField(Context context) {
 		super(context);
 		this.context = context;
+		SurfaceHolder holder = getHolder();
+		holder.addCallback(this);
+		
 		points = new ArrayList<Point>();
 		Point dummy1 = new Point(0, 50, 50, 2, Color.YELLOW);
-		Point dummy2 = new Point(1, 20, 20, 3, Color.DKGRAY);
+		Point dummy2 = new Point(1, 20, 20, 1.5F, Color.MAGENTA);
 		points.add(dummy1);
 		points.add(dummy2);
 
@@ -44,9 +50,8 @@ public class Field extends View implements SensorEventListener {
 		color.setColor(Color.GREEN);
 	}
 
-	@Override
-	protected void onDraw(Canvas canvas) {
-		super.onDraw(canvas);
+	public void doDraw(Canvas canvas) {
+		draw(canvas);
 		if(!isInitialized){
 			this.canvasWidth = canvas.getWidth();
 			this.canvasHeight = canvas.getHeight();
@@ -127,6 +132,34 @@ public class Field extends View implements SensorEventListener {
 			float values[] = adjustAccelOrientation(wm.getDefaultDisplay().getRotation(), event.values);
 			for(int i = 0; i < points.size(); i++){
 				movePoint(points.get(i), values);
+			}
+		}
+	}
+
+	@Override
+	public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+		fieldThread = new FieldThread(holder, context, this);
+		fieldThread.setRunning(true);
+		fieldThread.start();
+	}
+
+	@Override
+	public void surfaceCreated(SurfaceHolder holder) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void surfaceDestroyed(SurfaceHolder holder) {
+		fieldThread.setRunning(false);
+		boolean retry = true;
+		while(retry){
+			try	{
+				fieldThread.join();
+				retry = false;
+			}
+			catch(Exception e) {
+				e.printStackTrace();
 			}
 		}
 	}

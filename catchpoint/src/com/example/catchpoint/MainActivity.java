@@ -8,7 +8,7 @@ import android.view.WindowManager;
 
 public class MainActivity extends Activity {
 
-	Field f;
+	TestField f;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -18,7 +18,7 @@ public class MainActivity extends Activity {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 
 		setContentView(R.layout.activity_main);
-		f = new Field(this);
+		f = new TestField(this);
 		setContentView(f);
 	}
 	
